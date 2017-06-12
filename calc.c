@@ -1,35 +1,35 @@
 #include <stdio.h>
 #include "operators.h"
+#include "my_fscanf.h"
 
 int main(){
-	FILE *fp = NULL;
-	double operand1, operand2;
+	FILE *fp = fopen("read.txt","r");
+	int operand1, operand2;
 	char operator = ' ';
-	double (*result)(double, double);
-	double line = 0;
-
+	int line = 0;
+	double(*cal) (int, int);
 	fp = fopen("read.txt","r");
 	if(fp!=NULL){
-		fscanf(fp, "%lf", &line);
+		fscanf(fp, "%d", &line);
 	
-		for(int i=0; i<line; i++) {
-			fscanf(fp, "%lf %c %lf",&operand1, &operator, &operand2);
+		for(int i=0; i<line&&!feof(fp); i++) {
+			my_fscanf(fp, "%d %c %d",&operand1, &operator, &operand2);
 			switch(operator) {
 				case '+':
-				result = &add;
+				cal = add;
 				break;
 				case '-':
-				result = &minus;
+				cal = minus;
 				break;
 				case '*':
-				result = &mul;
+				cal = mul;
 				break;
 				case '/':
-				result = &div;
+				cal = div;
 				break;
 			}		
-			printf("%.0lf %c %.0lf = %.6lf\n",
-				 operand1, operator, operand2, result(operand1, operand2));
+			printf("%d %c %d = %f\n",
+				 operand1, operator, operand2, cal(operand1, operand2));
 		}
 	}
 	return 0;
